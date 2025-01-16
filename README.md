@@ -8,8 +8,11 @@
 - **Unit testing** - added basic **Jest** + **React Testing Library** integration with support for <Outlet> and cookies
 
 # Small modifications and features added to base application
-
 - Not found images are no longer blank and break the UI
+
+# Demo
+![demo](./assets_readme/DisneyWebsiteDemo.gif)
+
 
 # Frontend Development Challenge (Disney Edition)
 
