@@ -73,6 +73,7 @@ const Layout = () => {
   const location = useLocation();
   const isProfilePage = location.pathname.includes("/profile");
   const isUpdateProfilePage = location.pathname.includes("/updateProfile");
+  const isCharacterPage = location.pathname.includes("/character");
   const isHome = location.pathname === "/";
 
   const pathParams = useParams();
@@ -126,14 +127,14 @@ const Layout = () => {
 
   useEffect(() => {
     // console.log("Debounced: ", debounceValueTrigger);
-    if (isProfilePage || isUpdateProfilePage || isHome) {
+    if (isProfilePage || isUpdateProfilePage || isHome || isCharacterPage) {
       // Make sure search query params are unset on these pages
       setQueryParams((params) => {
         params.delete("search");
         return params;
       });
     }
-    if (!(isProfilePage || isUpdateProfilePage || isHome)) {
+    if (!(isProfilePage || isUpdateProfilePage || isHome || isCharacterPage)) {
       // Do not allow setting search query params on these pages
       setQueryParams((params) => {
         params.set("search", debounceValueTrigger);
