@@ -6,13 +6,16 @@
 - **User profile cookie storage** - User profiles are stored in a cookie and are retrived from there as well
 - **User profile input form** - uses **react-hook-form** + **zod** for automatic input validation and error messing for users
 - **Unit testing** - added basic **Jest** + **React Testing Library** integration with support for <Outlet> and cookies
+   - Note tests can be run using `npm run test`
+   - ![image](https://github.com/user-attachments/assets/4fab48a4-ccb7-461c-a21d-49ac709bdf5f)
+     
 
 # Small modifications and features added to base application
 - Not found images are no longer blank and break the UI
 
 # Demo
+(Please pardon the resoution of the gif)
 ![demo](./assets_readme/DisneyWebsiteDemo.gif)
-
 
 # Frontend Development Challenge (Disney Edition)
 
