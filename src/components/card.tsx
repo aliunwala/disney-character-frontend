@@ -1,7 +1,10 @@
 import styled from "styled-components";
-import { NavLink } from "react-router";
+import { NavLink } from "react-router-dom";
 import theme from "../constants/theme";
 import { CharacterProps } from "../definitions/character";
+// import NoImage from "../assets/No-Image-Placeholder.png";
+import NoImage from "../assets/No-Image-Placeholder.png";
+import { FunctionComponent, SVGProps } from "react";
 
 // STYLED COMPONENT
 const StyledCard = styled.figure`
@@ -41,7 +44,7 @@ const StyledCard = styled.figure`
     white-space: nowrap;
     margin: 16px;
   }
-  
+
   h4 {
     font-size: 15px;
     font-weight: normal;
@@ -80,32 +83,49 @@ const StyledCard = styled.figure`
       color: ${theme.accent};
     }
   }
-`;  
+`;
 
 // CARD PROPS
 interface CardProps {
   character: CharacterProps;
 }
 
-/* 
-* CHARACTER CARD COMPONENT
-*
-* description: Card component for displaying character information
-* @returns {JSX.Element}
-*/
-const Card = ({ 
-  character 
-}: CardProps) => {
+/*
+ * CHARACTER CARD COMPONENT
+ *
+ * description: Card component for displaying character information
+ * @returns {JSX.Element}
+ */
+const Card = ({ character }: CardProps) => {
   let films = "No films found";
 
   // IF CHARACTER HAS FILMS, JOIN THEM INTO A STRING
-  if(character?.films?.length) {
+  if (character?.films?.length) {
     films = character.films.join(", ");
   }
 
+  let isFound =
+    character?.imageUrl &&
+    character?.imageUrl != undefined &&
+    character?.imageUrl.length > 0;
+
+  // let imageURL: FunctionComponent<SVGProps<SVGSVGElement>> | string = NoImage;
+  // let imageALT = "No Image";
+  // if (
+  //   character?.imageUrl &&
+  //   character?.imageUrl != undefined &&
+  //   character?.imageUrl.length > 0
+  // ) {
+  //   imageURL = character?.imageUrl as string;
+  //   imageALT = character?.name;
+  // }
   return (
     <StyledCard>
-      <img src={character?.imageUrl} alt={character?.name} />
+      {isFound ? (
+        <img src={character?.imageUrl} alt={character?.name} />
+      ) : (
+        <img src={NoImage} alt={"No Image"} />
+      )}
 
       <figcaption>{character?.name}</figcaption>
 
@@ -114,7 +134,7 @@ const Card = ({
 
       <NavLink to={`/character/${character?._id}`}>View Profile</NavLink>
     </StyledCard>
-  )
-}
+  );
+};
 
 export default Card;

@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import LoadingIndicator from "../components/loading-indicator";
 import { CharacterProps } from "../definitions/character";
 import Button from "../components/button";
-
+import axios from "axios";
+import { useOutletContext, useParams } from "react-router-dom";
+import CharacterDetails from "../components/characterDetails";
+import NoImage from "../assets/No-Image-Placeholder.png";
+// import singleCharacter from "../api/disneyAPI"
 // STYLED CHARACTER COMPONENT
 const StyledCharacter = styled.div`
   display: flex;
@@ -17,7 +21,8 @@ const StyledCharacter = styled.div`
 
     img {
       border-radius: 16px;
-      box-shadow: 0 2px 8px 0 rgba(5, 69, 83, 0.12), 0 4px 24px 0 rgba(5, 69, 83, 0.12);
+      box-shadow: 0 2px 8px 0 rgba(5, 69, 83, 0.12),
+        0 4px 24px 0 rgba(5, 69, 83, 0.12);
       width: 100%;
       height: 528px;
       object-fit: cover;
@@ -59,48 +64,129 @@ const StyledCharacter = styled.div`
   }
 `;
 
-/* 
-* CHARACTER PAGE COMPONENT
-*
-* description: Character page component that displays character details
-* @returns {JSX.Element}
-*/
+/*
+ * CHARACTER PAGE COMPONENT
+ *
+ * description: Character page component that displays character details
+ * @returns {JSX.Element}
+ */
 const Character = () => {
-    const [characterDetails, setCharacterDetails] = useState<CharacterProps | null>(null);
-    const [loading, setLoading] = useState(true);
-    let content = null;
-    let featuredFilms = null;
-    let featuredShorts = null;
-    let featuredTV = null;
+  const { character, loading, setLoading } = useOutletContext<any>();
 
-    // IF LOADING, SHOW LOADING SPINNER
-    if (loading) {
-      return <LoadingIndicator />;
-    }
+  const [characterDetails, setCharacterDetails] =
+    useState<CharacterProps | null>(character);
+  // const [loading, setLoading] = useState(true);
+  let params = useParams();
 
-    // SET CONTENT BASED ON LOADING STATE
-    if (characterDetails && !loading) {
-      content = (
-        <StyledCharacter>
-          <figure>
-            <img src={characterDetails?.imageUrl} alt={characterDetails?.name} />
-          </figure>
+  let content = null;
+  let featuredFilms = null;
+  let featuredShorts = null;
+  let featuredTV = null;
 
-          <article>
-            <h3>{characterDetails?.name}</h3>
-            <p>Last Updated: {characterDetails?.updatedAt}</p>
+  useEffect(() => {
+    setLoading(true);
+    axios({
+      method: "GET",
+      url: `https://api.disneyapi.dev/character/${params.id}`,
+      // params: {
+      //   page: 1,
+      //   pageSize: 8,
+      // },
+    }).then((res) => {
+      setCharacterDetails(res?.data?.data);
+      setLoading(false);
+    });
+  }, [params.id]);
 
-            {featuredFilms}
-            {featuredShorts}
-            {featuredTV}
+  // IF LOADING, SHOW LOADING SPINNER
+  if (loading) {
+    return <LoadingIndicator />;
+  }
 
-            <Button href={characterDetails?.sourceUrl} label="Explore More Character Details" />
-          </article>
-        </StyledCharacter>
-      )
-    }
+  // SHOW PLACEHOLDER IMAGE IF THERE IS NO IMAGE
+  let imageURL = NoImage;
+  let imageALT = "No Image";
+  if (
+    characterDetails?.imageUrl &&
+    characterDetails?.imageUrl != undefined &&
+    characterDetails?.imageUrl.length > 0
+  ) {
+    imageURL = characterDetails?.imageUrl;
+    imageALT = characterDetails?.name;
+  }
 
-    return content;
-}
+  // FORMATING DATE
+  let d = new Date();
+  let month = "";
+  let day;
+  let year;
+  const mL = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  if (characterDetails?.updatedAt) {
+    d = new Date(characterDetails.updatedAt);
+    month = mL[d.getMonth()];
+    day = d.getDay();
+    year = d.getFullYear();
+  }
+
+  // SET CONTENT BASED ON LOADING STATE
+  if (characterDetails && !loading) {
+    content = (
+      <StyledCharacter>
+        <figure>
+          <img src={imageURL} alt={imageALT} />
+        </figure>
+
+        <article>
+          <h3>{characterDetails?.name}</h3>
+          {/* <p>Last Updated: {characterDetails?.updatedAt}</p> */}
+          <p>{`Last Updated: ${month} ${day}, ${year} `}</p>
+          <CharacterDetails
+            title="Featured Films"
+            list={characterDetails.films}
+            charId={characterDetails._id}
+          ></CharacterDetails>
+          <CharacterDetails
+            title="Short Films"
+            list={characterDetails.shortFilms}
+            charId={characterDetails._id}
+          ></CharacterDetails>
+          <CharacterDetails
+            title="TV Shows"
+            list={characterDetails.tvShows}
+            charId={characterDetails._id}
+          ></CharacterDetails>
+          <CharacterDetails
+            title="Video Games"
+            list={characterDetails.videoGames}
+            charId={characterDetails._id}
+          ></CharacterDetails>
+          {featuredFilms}
+          {featuredShorts}
+          {featuredTV}
+
+          <Button
+            href={characterDetails?.sourceUrl}
+            label="Explore More Character Details"
+          />
+        </article>
+      </StyledCharacter>
+    );
+  }
+
+  return content;
+};
 
 export default Character;

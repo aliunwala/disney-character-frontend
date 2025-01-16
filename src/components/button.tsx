@@ -7,11 +7,17 @@ const StyledButton = styled.span<{
 }>`
   display: inline-block;
 
-  a, button {
-    box-shadow: ${props => props.$variant === "secondary" ? "none" : "0 4px 4px 0 rgba(5, 69, 83, 0.24)"};
-    background-color: ${props => props.$variant === "secondary" ? theme.light : theme.accent};
+  a,
+  button {
+    box-shadow: ${(props) =>
+      props.$variant === "secondary"
+        ? "none"
+        : "0 4px 4px 0 rgba(5, 69, 83, 0.24)"};
+    background-color: ${(props) =>
+      props.$variant === "secondary" ? theme.light : theme.accent};
     border: 1px solid ${theme.accent};
-    color: ${props => props.$variant === "secondary" ? theme.accent : theme.light};
+    color: ${(props) =>
+      props.$variant === "secondary" ? theme.accent : theme.light};
     cursor: pointer;
     font-size: 16px;
     padding: 16px 24px;
@@ -37,33 +43,46 @@ interface ButtonProps {
   href?: string;
   label?: string;
   variant?: "primary" | "secondary";
+  buttonType?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
-/* 
-* BUTTON COMPONENT
-*
-* description: Primary and secondary button component for the application
-* @returns {JSX.Element}
-*/
-const Button = ({ 
+/*
+ * BUTTON COMPONENT
+ *
+ * description: Primary and secondary button component for the application
+ * @returns {JSX.Element}
+ */
+const Button = ({
   onClick,
   href,
   label,
-  variant = "primary"
+  variant = "primary",
+  buttonType,
+  disabled,
 }: ButtonProps) => {
   let content = null;
 
+  // IF BUTTON TYPE IS SET MAKE IT A NORMAL BUTTON
+  if (buttonType) {
+    content = (
+      <button disabled={disabled} type={buttonType}>
+        {label}
+      </button>
+    );
+  }
+
   // IF HREF IS PROVIDED CREATE HYPERLINK
-  if(href) {
+  if (href) {
     content = <a href={href}>{label}</a>;
-  } 
-  
+  }
+
   // IF CLICK IS PROVIDED CREATE BUTTON
-  if(onClick) {
+  if (onClick) {
     content = <button onClick={onClick}>{label}</button>;
   }
 
   return <StyledButton $variant={variant}>{content}</StyledButton>;
-}
+};
 
 export default Button;

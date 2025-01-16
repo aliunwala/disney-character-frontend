@@ -12,4 +12,5 @@ export type CharacterProps = {
   tvShows?: string[];
   _id?: string;
   updatedAt?: string;
+  videoGames?: string[]
 }
