@@ -45,6 +45,7 @@ interface ButtonProps {
   variant?: "primary" | "secondary";
   buttonType?: "button" | "submit" | "reset";
   disabled?: boolean;
+  myStyles?: any;
 }
 
 /*
@@ -60,13 +61,14 @@ const Button = ({
   variant = "primary",
   buttonType,
   disabled,
+  myStyles,
 }: ButtonProps) => {
   let content = null;
 
   // IF BUTTON TYPE IS SET MAKE IT A NORMAL BUTTON
   if (buttonType) {
     content = (
-      <button disabled={disabled} type={buttonType}>
+      <button style={myStyles} disabled={disabled} type={buttonType}>
         {label}
       </button>
     );

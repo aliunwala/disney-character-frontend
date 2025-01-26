@@ -7,7 +7,7 @@ import Profile from "./pages/Profile";
 import Character from "./pages/Character";
 import Results from "./pages/Results";
 import "./index.css";
-import UpdateProfile from "./pages/UpdateProfile";
+import UpdateProfile from "./pages/UpdateProfile/UpdateProfile";
 
 // // FOR USE IF WE ARE SEEING STRANGE NAVIGATION
 // const DebugLayout = () => {

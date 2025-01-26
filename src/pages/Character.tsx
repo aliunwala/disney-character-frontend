@@ -7,6 +7,7 @@ import axios from "axios";
 import { useOutletContext, useParams } from "react-router-dom";
 import CharacterDetails from "../components/characterDetails";
 import NoImage from "../assets/No-Image-Placeholder.png";
+import { formattedDate } from "../utils/helperMethods";
 // import singleCharacter from "../api/disneyAPI"
 // STYLED CHARACTER COMPONENT
 const StyledCharacter = styled.div`
@@ -115,30 +116,16 @@ const Character = () => {
     imageALT = characterDetails?.name;
   }
 
-  // FORMATING DATE
-  let d = new Date();
-  let month = "";
-  let day;
-  let year;
-  const mL = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+  let month, day, year;
   if (characterDetails?.updatedAt) {
-    d = new Date(characterDetails.updatedAt);
-    month = mL[d.getMonth()];
-    day = d.getDay();
-    year = d.getFullYear();
+    // d = new Date(characterDetails.updatedAt);
+    // month = mL[d.getMonth()];
+    // day = d.getDay();
+    // year = d.getFullYear();
+    ({ month, day, year } = formattedDate(
+      characterDetails.updatedAt,
+      "YYYY-MM-DD"
+    ));
   }
 
   // SET CONTENT BASED ON LOADING STATE
