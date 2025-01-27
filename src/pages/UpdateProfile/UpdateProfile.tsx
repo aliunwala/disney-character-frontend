@@ -8,6 +8,11 @@ import { Link, useOutletContext } from "react-router-dom";
 import Cookies from "js-cookie";
 import FormInput from "../../components/formInput";
 import { allInputs } from "./staticFormData";
+import {
+  FormFields,
+  FormFieldsDefaultValues,
+  schema,
+} from "../../definitions/interfaces";
 const StyledRow = styled.div`
   display: flex;
   gap: 16px;
@@ -46,38 +51,13 @@ const StyledRow = styled.div`
   }
 `;
 
-const schema = z.object({
-  firstName: z.string().min(1).max(200),
-  lastName: z.string().min(1).max(200),
-  favoriteCharacter: z.string().min(1).max(200),
-  favoriteRide: z.string().min(1).max(200),
-  favoriteMovie: z.string().min(1).max(200),
-  favoritePark: z.string().min(1).max(200),
-  dob: z.string().date(),
-  city: z.string().min(1).max(200),
-  state: z.string().min(1).max(200),
-});
-type FormFields = z.infer<typeof schema>;
-
 let UpdateProfile = () => {
   // SETS UP COOKIE WITH JOHN DOE INFO IF THERE IS NO COOKIE ALREADY SET UP
   let currentUserInfo = Cookies.get("userInfo");
   if (currentUserInfo === undefined) {
-    Cookies.set(
-      "userInfo",
-      JSON.stringify({
-        firstName: "John",
-        lastName: "Doe",
-        favoriteCharacter: "Elsa",
-        favoriteRide: "Space Mountain",
-        favoriteMovie: "Moana",
-        favoritePark: "Disney World, Florida",
-        dob: "1980-01-01",
-        city: "San Francisco",
-        state: "California",
-      }),
-      { expires: 7 }
-    );
+    Cookies.set("userInfo", JSON.stringify(FormFieldsDefaultValues), {
+      expires: 7,
+    });
   }
 
   let currentUserInfoJSON;

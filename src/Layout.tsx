@@ -1,7 +1,6 @@
 import {
   Outlet,
   useLocation,
-  useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
@@ -11,9 +10,9 @@ import Featured from "./components/featured";
 import Footer from "./components/footer";
 import theme from "./constants/theme";
 import { useEffect, useState } from "react";
-import { CharacterProps } from "./definitions/character";
 import { filterCharacters, singleCharacter } from "./api/disneyAPI";
-import { z } from "zod";
+import { useDebounce } from "use-debounce";
+import { FormFields, FormFieldsDefaultValues } from "./definitions/interfaces";
 
 // STYLED LAYOUT COMPONENT
 const StyledLayout = styled.div`
@@ -46,20 +45,6 @@ const StyledLayout = styled.div`
  * @returns {JSX.Element}
  */
 
-function useDebounce(cb: string, delay: number) {
-  const [debounceValue, setDebounceValue] = useState(cb);
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebounceValue(cb);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [cb, delay]);
-  return debounceValue;
-}
-
 const Layout = () => {
   // STATE USED BY MAIN AND RESULTS PAGES
   const [localSearch, setLocalSearch] = useState("");
@@ -69,7 +54,7 @@ const Layout = () => {
   const [character, setCharacter] = useState(null);
   const [loading, setLoading] = useState(true);
   const debounceSpeed = 750;
-  const debounceValueTrigger = useDebounce(localSearch!, debounceSpeed);
+  const [debounceValueTrigger] = useDebounce(localSearch, debounceSpeed);
   const location = useLocation();
   const isProfilePage = location.pathname.includes("/profile");
   const isUpdateProfilePage = location.pathname.includes("/updateProfile");
@@ -143,31 +128,7 @@ const Layout = () => {
     }
   }, [debounceValueTrigger]);
 
-  // STATE USED BY BOTH PROFILE AND EDIT_PROFILE PAGES:
-  const schema = z.object({
-    firstName: z.string(),
-    lastName: z.string(),
-    favoriteCharacter: z.string(),
-    favoriteRide: z.string(),
-    favoriteMovie: z.string(),
-    favoritePark: z.string(),
-    dob: z.string(),
-    city: z.string(),
-    state: z.string(),
-  });
-  type FormFields = z.infer<typeof schema>;
-  const defaultValues: FormFields = {
-    firstName: "John",
-    lastName: "Doe",
-    favoriteCharacter: "Elsa",
-    favoriteRide: "Space Mountain",
-    favoriteMovie: "Moana",
-    favoritePark: "Disney World, Florida",
-    dob: "1980-01-01",
-    city: "San Francisco",
-    state: "California",
-  };
-  const [userState, setUserState] = useState(defaultValues);
+  const [userState, setUserState] = useState(FormFieldsDefaultValues);
 
   return (
     <StyledLayout>
